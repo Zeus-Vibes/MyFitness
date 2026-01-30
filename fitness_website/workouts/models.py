@@ -24,6 +24,7 @@ class WorkoutPlan(models.Model):
             ('endurance', 'Endurance'),
         ]
     )
+    image = models.ImageField(upload_to='workout_plans/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -35,6 +36,7 @@ class Exercise(models.Model):
     muscle_groups = models.CharField(max_length=200)
     equipment_needed = models.CharField(max_length=200, blank=True)
     youtube_url = models.URLField(blank=True, help_text="YouTube video URL for exercise demonstration")
+    image = models.ImageField(upload_to='exercises/', blank=True, null=True)
     instructions = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 

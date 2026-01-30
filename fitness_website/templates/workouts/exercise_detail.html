@@ -1,76 +1,485 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ exercise.name }} - Fitness Website{% endblock %}
+{% block title %}{{ exercise.name }} - Anytime Fitness{% endblock %}
+
+{% block extra_css %}
+<style>
+    main.container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
+    .exercise-hero {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9) 0%, rgba(30, 64, 175, 0.9) 100%),
+                    url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&q=80') center/cover no-repeat;
+        background-attachment: fixed;
+        color: white;
+        padding: 3rem 0;
+        margin: 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        position: relative;
+    }
+    
+    .exercise-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    .exercise-hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .exercise-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    }
+    
+    .exercise-hero .breadcrumb {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        display: inline-flex;
+    }
+    
+    .exercise-hero .breadcrumb-item a {
+        color: white;
+        text-decoration: none;
+    }
+    
+    .exercise-hero .breadcrumb-item.active {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .exercise-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: calc(100vh - 200px);
+        padding: 3rem 0;
+    }
+    
+    .exercise-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 2rem;
+        animation: fadeInUp 0.6s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .exercise-card .card-header {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        color: white;
+        padding: 1.5rem;
+        border: none;
+    }
+    
+    .exercise-card .card-header h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .exercise-card .card-body {
+        padding: 2rem;
+    }
+    
+    .info-section {
+        margin-bottom: 2rem;
+    }
+    
+    .info-section h4 {
+        color: #1e40af;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-section h4 i {
+        color: #2563eb;
+    }
+    
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-badge i {
+        color: #2563eb;
+    }
+    
+    .instruction-list {
+        list-style: none;
+        padding: 0;
+        counter-reset: instruction-counter;
+    }
+    
+    .instruction-list li {
+        counter-increment: instruction-counter;
+        position: relative;
+        padding-left: 3.5rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .instruction-list li::before {
+        content: counter(instruction-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+    
+    .video-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .video-header {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .video-header i {
+        font-size: 1.5rem;
+    }
+    
+    .video-header h5 {
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        background: #000;
+    }
+    
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    .video-actions {
+        padding: 1.25rem;
+        background: #f8fafc;
+    }
+    
+    .quick-actions-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        position: sticky;
+        top: calc(2rem + 400px);
+    }
+    
+    .quick-actions-card h5 {
+        color: #1e40af;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #1e293b;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .action-btn:hover {
+        border-color: #2563eb;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+        transform: translateX(5px);
+    }
+    
+    .action-btn i {
+        font-size: 1.25rem;
+        color: #2563eb;
+    }
+    
+    .muscle-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .equipment-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .description-box {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-left: 4px solid #2563eb;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+    
+    .description-box p {
+        margin: 0;
+        line-height: 1.6;
+        color: #475569;
+    }
+    
+    @media (max-width: 768px) {
+        .exercise-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .video-container,
+        .quick-actions-card {
+            position: relative;
+            top: 0;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2>{{ exercise.name }}</h2>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p>{{ exercise.description }}</p>
-                </div>
-                
-                <div class="mb-3">
-                    <strong>Instructions:</strong>
-                    <div>{{ exercise.instructions|linebreaks }}</div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Muscle Groups:</strong>
-                        <p>{{ exercise.muscle_groups }}</p>
-                    </div>
-                    {% if exercise.equipment_needed %}
-                    <div class="col-md-6">
-                        <strong>Equipment Needed:</strong>
-                        <p>{{ exercise.equipment_needed }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+<!-- Hero Section -->
+<div class="exercise-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-3">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'exercises' %}">Exercises</a></li>
+                <li class="breadcrumb-item active">{{ exercise.name }}</li>
+            </ol>
+        </nav>
+        <h1><i class="fas fa-dumbbell me-2"></i>{{ exercise.name }}</h1>
+        <div class="mt-3">
+            {% for muscle in exercise.muscle_groups.split ',' %}
+                <span class="muscle-tag">{{ muscle.strip }}</span>
+            {% endfor %}
+            {% if exercise.equipment_needed %}
+                {% for equipment in exercise.equipment_needed.split ',' %}
+                    <span class="equipment-tag"><i class="fas fa-tools me-1"></i>{{ equipment.strip }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="equipment-tag"><i class="fas fa-hand-paper me-1"></i>Bodyweight</span>
+            {% endif %}
         </div>
     </div>
-    
-    <div class="col-md-4">
-        {% if exercise.youtube_url %}
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5>Video Demonstration</h5>
-            </div>
-            <div class="card-body">
-                <div class="ratio ratio-16x9">
-                    {% if 'youtube.com/watch?v=' in exercise.youtube_url %}
-                        {% with exercise.youtube_url|cut:'https://www.youtube.com/watch?v=' as video_id %}
-                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
-                        {% endwith %}
-                    {% elif 'youtu.be/' in exercise.youtube_url %}
-                        {% with exercise.youtube_url|cut:'https://youtu.be/' as video_id %}
-                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
-                        {% endwith %}
-                    {% else %}
-                        <p>Invalid YouTube URL format</p>
-                    {% endif %}
+</div>
+
+<!-- Exercise Section -->
+<div class="exercise-section">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Description Card -->
+                <div class="exercise-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-info-circle me-2"></i>About This Exercise</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="description-box">
+                            <p>{{ exercise.description }}</p>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h4><i class="fas fa-bullseye"></i>Target Muscles</h4>
+                            <div>
+                                {% for muscle in exercise.muscle_groups.split ',' %}
+                                    <span class="info-badge">
+                                        <i class="fas fa-dumbbell"></i>
+                                        {{ muscle.strip }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% if exercise.equipment_needed %}
+                        <div class="info-section">
+                            <h4><i class="fas fa-tools"></i>Equipment Required</h4>
+                            <div>
+                                {% for equipment in exercise.equipment_needed.split ',' %}
+                                    <span class="info-badge">
+                                        <i class="fas fa-check-circle"></i>
+                                        {{ equipment.strip }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="info-section">
+                            <h4><i class="fas fa-hand-paper"></i>Equipment Required</h4>
+                            <div>
+                                <span class="info-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    No Equipment (Bodyweight)
+                                </span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="mt-2">
-                    <a href="{{ exercise.youtube_url }}" target="_blank" class="btn btn-danger btn-sm">
-                        Watch on YouTube
+                
+                <!-- Instructions Card -->
+                <div class="exercise-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-list-ol me-2"></i>Step-by-Step Instructions</h3>
+                    </div>
+                    <div class="card-body">
+                        <ol class="instruction-list">
+                            {% for line in exercise.instructions.splitlines %}
+                                {% if line.strip %}
+                                    <li>{{ line.strip }}</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Video Card -->
+                {% if exercise.youtube_url %}
+                <div class="video-container">
+                    <div class="video-header">
+                        <i class="fab fa-youtube"></i>
+                        <h5>Video Demonstration</h5>
+                    </div>
+                    <div class="video-wrapper">
+                        {% if 'youtube.com/watch?v=' in exercise.youtube_url %}
+                            {% with video_id=exercise.youtube_url|slice:"32:" %}
+                                <iframe 
+                                    src="https://www.youtube.com/embed/{{ video_id }}?rel=0&modestbranding=1" 
+                                    allowfullscreen
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                                </iframe>
+                            {% endwith %}
+                        {% elif 'youtu.be/' in exercise.youtube_url %}
+                            {% with video_id=exercise.youtube_url|slice:"17:" %}
+                                <iframe 
+                                    src="https://www.youtube.com/embed/{{ video_id }}?rel=0&modestbranding=1" 
+                                    allowfullscreen
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                                </iframe>
+                            {% endwith %}
+                        {% elif 'youtube.com/embed/' in exercise.youtube_url %}
+                            <iframe 
+                                src="{{ exercise.youtube_url }}?rel=0&modestbranding=1" 
+                                allowfullscreen
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                            </iframe>
+                        {% else %}
+                            <div class="p-4 text-center">
+                                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                <p>Invalid YouTube URL format</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="video-actions">
+                        <a href="{{ exercise.youtube_url }}" target="_blank" class="btn btn-danger w-100">
+                            <i class="fab fa-youtube me-2"></i>Watch on YouTube
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Quick Actions Card -->
+                <div class="quick-actions-card">
+                    <h5><i class="fas fa-bolt"></i>Quick Actions</h5>
+                    <a href="{% url 'exercises' %}" class="action-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Back to Exercises</span>
                     </a>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-        
-        <div class="card">
-            <div class="card-body">
-                <h5>Quick Actions</h5>
-                <div class="d-grid gap-2">
-                    <a href="{% url 'exercises' %}" class="btn btn-outline-primary">Back to Exercises</a>
-                    <a href="{% url 'workout_plans' %}" class="btn btn-outline-success">View Workout Plans</a>
+                    <a href="{% url 'workout_plans' %}" class="action-btn">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>View Workout Plans</span>
+                    </a>
+                    <a href="{% url 'home' %}" class="action-btn">
+                        <i class="fas fa-home"></i>
+                        <span>Back to Home</span>
+                    </a>
                 </div>
             </div>
         </div>

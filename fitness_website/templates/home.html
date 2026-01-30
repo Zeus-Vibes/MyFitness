@@ -1,85 +1,594 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - Fitness Website{% endblock %}
+{% block title %}Home - Anytime Fitness{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        overflow-x: hidden;
+    }
+    
+    main.container {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0) 0%, rgba(30, 64, 175, 0) 100%),
+                    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&q=80') center/cover no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        margin: 0;
+        margin-top: 0 !important;
+        padding: 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .hero-content h1 {
+        font-size: 4.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+        line-height: 1.2;
+        letter-spacing: -1px;
+    }
+    
+    .hero-content .lead {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 2.5rem;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 100vh;
+        }
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+        .hero-content .lead {
+            font-size: 1.1rem;
+        }
+    }
+    
+    .feature-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .feature-card:hover {
+        border-color: #2563eb;
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
+    }
+    
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: #2563eb;
+        transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .stats-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 24px;
+        padding: 3rem;
+        margin: 3rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    
+    .stat-item {
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2563eb;
+        display: block;
+        animation: countUp 2s ease-out;
+    }
+    
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stat-label {
+        color: #64748b;
+        font-weight: 500;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.252) 0%, rgba(0, 0, 0, 0.252) 100%),
+                    url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&q=80') center/cover;
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 24px;
+        text-align: center;
+        margin: 3rem 0;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .testimonial-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .testimonial-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .how-it-works-section {
+        position: relative;
+        padding: 3rem 0;
+    }
+    
+    .step-connector {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, #2563eb 50%, transparent 100%);
+        z-index: 0;
+    }
+    
+    .workout-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+    }
+    
+    .workout-image:hover {
+        transform: scale(1.05);
+    }
+    
+    .image-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+    
+    .image-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+        padding: 1.5rem;
+        color: white;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .image-card:hover .image-overlay {
+        transform: translateY(0);
+    }
+    
+    .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        opacity: 0.8;
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateX(-50%) translateY(0);
+        }
+        40% {
+            transform: translateX(-50%) translateY(-10px);
+        }
+        60% {
+            transform: translateX(-50%) translateY(-5px);
+        }
+    }
+    
+    .btn-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .btn-outline-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3) !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="hero-section bg-primary text-white py-5 mb-5 rounded">
-    <div class="container text-center">
-        <h1 class="display-4">Welcome to FitLife</h1>
-        <p class="lead">Your ultimate fitness companion for workouts, nutrition, and health tracking</p>
+
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="mb-4">Transform Your Body,<br>Transform Your Life</h1>
+        <p class="lead mb-5">Join thousands of people achieving their fitness goals with personalized workout plans, nutrition guidance, and expert support.</p>
         {% if not user.is_authenticated %}
-            <a href="{% url 'register' %}" class="btn btn-light btn-lg me-3">Get Started</a>
-            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login</a>
+            <div class="d-flex gap-4 justify-content-center flex-wrap">
+                <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5 py-3 shadow-lg">
+                    <i class="fas fa-rocket me-2"></i>Get Started Free
+                </a>
+                <a href="{% url 'workout_plans' %}" class="btn btn-outline-light btn-lg px-5 py-3 shadow-lg">
+                    <i class="fas fa-play-circle me-2"></i>Explore Plans
+                </a>
+            </div>
+        {% else %}
+            <div class="d-flex gap-4 justify-content-center flex-wrap">
+                <a href="{% url 'workout_plans' %}" class="btn btn-light btn-lg px-5 py-3 shadow-lg">
+                    <i class="fas fa-dumbbell me-2"></i>Browse Workouts
+                </a>
+                <a href="{% url 'my_workouts' %}" class="btn btn-outline-light btn-lg px-5 py-3 shadow-lg">
+                    <i class="fas fa-chart-line me-2"></i>My Progress
+                </a>
+            </div>
         {% endif %}
+        
+        <!-- Scroll indicator -->
+        <!-- <div class="scroll-indicator mt-5">
+            <i class="fas fa-chevron-down fa-2x animate-bounce"></i>
+        </div> -->
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">🏋️ Workout Plans</h5>
-                <p class="card-text">Discover structured workout plans for all fitness levels</p>
-                <a href="{% url 'workout_plans' %}" class="btn btn-primary">View Plans</a>
+<div class="container"
+
+<!-- Features Section -->
+<div class="row g-4 mb-5 mt-5">
+    <div class="col-md-3 col-sm-6">
+        <div class="feature-card">
+            <div class="image-card mb-3">
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Workout Plans" class="workout-image" style="height: 180px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Professional Training</h6>
+                </div>
             </div>
+            <div class="feature-icon">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <h5 class="fw-bold mb-3">Workout Plans</h5>
+            <p class="text-muted mb-3">Structured programs designed by fitness experts for all levels</p>
+            <a href="{% url 'workout_plans' %}" class="btn btn-sm btn-outline-primary">
+                Explore <i class="fas fa-arrow-right ms-1"></i>
+            </a>
         </div>
     </div>
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">💪 Exercises</h5>
-                <p class="card-text">Browse exercises with video demonstrations</p>
-                <a href="{% url 'exercises' %}" class="btn btn-primary">Browse Exercises</a>
+    <div class="col-md-3 col-sm-6">
+        <div class="feature-card">
+            <div class="image-card mb-3">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80" alt="Exercise Library" class="workout-image" style="height: 180px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Video Demonstrations</h6>
+                </div>
             </div>
+            <div class="feature-icon">
+                <i class="fas fa-heartbeat"></i>
+            </div>
+            <h5 class="fw-bold mb-3">Exercise Library</h5>
+            <p class="text-muted mb-3">Hundreds of exercises with video demonstrations and instructions</p>
+            <a href="{% url 'exercises' %}" class="btn btn-sm btn-outline-primary">
+                Browse <i class="fas fa-arrow-right ms-1"></i>
+            </a>
         </div>
     </div>
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">🥗 Diet Plans</h5>
-                <p class="card-text">Nutrition plans tailored to your fitness goals</p>
-                <a href="{% url 'diet_plans' %}" class="btn btn-primary">View Diet Plans</a>
+    <div class="col-md-3 col-sm-6">
+        <div class="feature-card">
+            <div class="image-card mb-3">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=80" alt="Nutrition Plans" class="workout-image" style="height: 180px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Healthy Meals</h6>
+                </div>
             </div>
+            <div class="feature-icon">
+                <i class="fas fa-apple-alt"></i>
+            </div>
+            <h5 class="fw-bold mb-3">Nutrition Plans</h5>
+            <p class="text-muted mb-3">Customized meal plans to fuel your fitness journey</p>
+            <a href="{% url 'diet_plans' %}" class="btn btn-sm btn-outline-primary">
+                View Plans <i class="fas fa-arrow-right ms-1"></i>
+            </a>
         </div>
     </div>
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">📊 Calculators</h5>
-                <p class="card-text">BMI and calorie calculators for health tracking</p>
-                <a href="{% url 'bmi_calculator' %}" class="btn btn-primary">Calculate BMI</a>
+    <div class="col-md-3 col-sm-6">
+        <div class="feature-card">
+            <div class="image-card mb-3">
+                <img src="https://cdn.mos.cms.futurecdn.net/yZwbYY2Se9KkQXuYp5Q6mk-1200-80.jpg" alt="Health Tools" class="workout-image" style="height: 180px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Track Your Progress</h6>
+                </div>
+            </div>
+            <div class="feature-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <h5 class="fw-bold mb-3">Health Tools</h5>
+            <p class="text-muted mb-3">BMI and calorie calculators to track your progress</p>
+            <a href="{% url 'bmi_calculator' %}" class="btn btn-sm btn-outline-primary">
+                Calculate <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section">
+    <div class="row">
+        <div class="col-md-3 col-6 mb-4 mb-md-0">
+            <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Exercises</span>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4 mb-md-0">
+            <div class="stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Workout Plans</span>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-item">
+                <span class="stat-number">30+</span>
+                <span class="stat-label">Diet Plans</span>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-item">
+                <span class="stat-number">10K+</span>
+                <span class="stat-label">Active Users</span>
             </div>
         </div>
     </div>
 </div>
 
-{% if user.is_authenticated %}
-<div class="row mt-5">
-    <div class="col-12">
-        <h3>Welcome back, {{ user.first_name|default:user.username }}!</h3>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Your Fitness Journey</h5>
-                        <p class="card-text">Track your progress and stay motivated</p>
-                        <a href="{% url 'my_workouts' %}" class="btn btn-outline-primary me-2">My Workouts</a>
-                        <a href="{% url 'my_diet_plans' %}" class="btn btn-outline-primary">My Diet Plans</a>
-                    </div>
+<!-- How It Works Section -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+        <p class="lead text-muted">Start your fitness journey in three simple steps</p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="text-center">
+            <div class="image-card mb-3">
+                <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&q=80" alt="Create Account" class="workout-image" style="height: 200px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Join Our Community</h6>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Quick Tools</h5>
-                        <p class="card-text">Calculate your fitness metrics</p>
-                        <a href="{% url 'bmi_calculator' %}" class="btn btn-outline-success me-2">BMI Calculator</a>
-                        <a href="{% url 'calorie_calculator' %}" class="btn btn-outline-success">Calorie Calculator</a>
-                    </div>
+            <div class="feature-icon mx-auto mb-3">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h4 class="fw-bold mb-3">1. Create Account</h4>
+            <p class="text-muted">Sign up for free and set your fitness goals</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="text-center">
+            <div class="image-card mb-3">
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Choose Plan" class="workout-image" style="height: 200px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Personalized Programs</h6>
                 </div>
+            </div>
+            <div class="feature-icon mx-auto mb-3">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h4 class="fw-bold mb-3">2. Choose Your Plan</h4>
+            <p class="text-muted">Select from our curated workout and nutrition plans</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="text-center">
+            <div class="image-card mb-3">
+                <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Track Progress" class="workout-image" style="height: 200px;">
+                <div class="image-overlay">
+                    <h6 class="mb-0">Achieve Your Goals</h6>
+                </div>
+            </div>
+            <div class="feature-icon mx-auto mb-3">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h4 class="fw-bold mb-3">3. Track Progress</h4>
+            <p class="text-muted">Monitor your achievements and stay motivated</p>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-5">
+        <h2 class="display-5 fw-bold mb-3">Success Stories</h2>
+        <p class="lead text-muted">See what our community has achieved</p>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="testimonial-card">
+            <div class="d-flex align-items-center mb-3">
+                <div class="testimonial-avatar me-3">Un</div>
+                <div>
+                    <h6 class="fw-bold mb-0">Unzala</h6>
+                    <small class="text-muted">Lost 30 lbs</small>
+                </div>
+            </div>
+            <p class="text-muted">"FitLife transformed my life! The workout plans are easy to follow and the results speak for themselves."</p>
+            <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
             </div>
         </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="testimonial-card">
+            <div class="d-flex align-items-center mb-3">
+                <div class="testimonial-avatar me-3">KK</div>
+                <div>
+                    <h6 class="fw-bold mb-0">Krish</h6>
+                    <small class="text-muted">Gained Muscle</small>
+                </div>
+            </div>
+            <p class="text-muted">"The nutrition plans are fantastic! I've never felt stronger and more energized. Highly recommend!"</p>
+            <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="testimonial-card">
+            <div class="d-flex align-items-center mb-3">
+                <div class="testimonial-avatar me-3">HJ</div>
+                <div>
+                    <h6 class="fw-bold mb-0">Himesh Jadav</h6>
+                    <small class="text-muted">Marathon Runner</small>
+                </div>
+            </div>
+            <p class="text-muted">"The exercise library with video demos is incredible. Perfect for learning proper form and technique."</p>
+            <div class="text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+{% if not user.is_authenticated %}
+<div class="cta-section">
+    <h2 class="display-5 fw-bold mb-4">Ready to Start Your Journey?</h2>
+    <p class="lead mb-4">Join FitLife today and get access to personalized workout plans, nutrition guidance, and a supportive community.</p>
+    <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5 py-3">
+        <i class="fas fa-rocket me-2"></i>Sign Up Now - It's Free!
+    </a>
+</div>
+{% else %}
+<div class="cta-section">
+    <h2 class="display-5 fw-bold mb-4">Welcome Back, {{ user.first_name|default:user.username }}!</h2>
+    <p class="lead mb-4">Continue your fitness journey and achieve your goals.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="{% url 'my_workouts' %}" class="btn btn-light btn-lg px-4 py-3">
+            <i class="fas fa-dumbbell me-2"></i>My Workouts
+        </a>
+        <a href="{% url 'my_diet_plans' %}" class="btn btn-outline-light btn-lg px-4 py-3">
+            <i class="fas fa-utensils me-2"></i>My Diet Plans
+        </a>
     </div>
 </div>
 {% endif %}
+
+</div>
 {% endblock %}

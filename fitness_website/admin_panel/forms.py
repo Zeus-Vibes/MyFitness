@@ -68,19 +68,20 @@ class UserManagementForm(forms.ModelForm):
 class WorkoutPlanForm(forms.ModelForm):
     class Meta:
         model = WorkoutPlan
-        fields = ['name', 'description', 'difficulty_level', 'duration_weeks', 'goal']
+        fields = ['name', 'description', 'difficulty_level', 'duration_weeks', 'goal', 'image']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'difficulty_level': forms.Select(attrs={'class': 'form-control'}),
             'duration_weeks': forms.NumberInput(attrs={'class': 'form-control'}),
             'goal': forms.Select(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
 class ExerciseForm(forms.ModelForm):
     class Meta:
         model = Exercise
-        fields = ['name', 'description', 'muscle_groups', 'equipment_needed', 'youtube_url', 'instructions']
+        fields = ['name', 'description', 'muscle_groups', 'equipment_needed', 'youtube_url', 'instructions', 'image']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -88,6 +89,7 @@ class ExerciseForm(forms.ModelForm):
             'equipment_needed': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Dumbbells, Barbell'}),
             'youtube_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://www.youtube.com/watch?v=...'}),
             'instructions': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
 class WorkoutSessionForm(forms.ModelForm):
@@ -104,7 +106,7 @@ class WorkoutSessionForm(forms.ModelForm):
 class DietPlanForm(forms.ModelForm):
     class Meta:
         model = DietPlan
-        fields = ['name', 'description', 'goal', 'daily_calories', 'protein_percentage', 'carbs_percentage', 'fat_percentage']
+        fields = ['name', 'description', 'goal', 'daily_calories', 'protein_percentage', 'carbs_percentage', 'fat_percentage', 'image']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
@@ -113,6 +115,7 @@ class DietPlanForm(forms.ModelForm):
             'protein_percentage': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'min': '0', 'max': '100'}),
             'carbs_percentage': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'min': '0', 'max': '100'}),
             'fat_percentage': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1', 'min': '0', 'max': '100'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
         }
     
     def clean(self):

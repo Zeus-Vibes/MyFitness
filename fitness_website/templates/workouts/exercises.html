@@ -2,9 +2,50 @@
 
 {% block title %}Exercises - Fitness Website{% endblock %}
 
+{% block extra_css %}
+<style>
+    .exercise-card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        height: 100%;
+    }
+    
+    .exercise-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+    }
+    
+    .exercise-card-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .exercise-card:hover .exercise-card-img {
+        transform: scale(1.1);
+    }
+    
+    .exercise-card-img-wrapper {
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .exercise-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Exercise Library</h2>
+    <h2 class="fw-bold">Exercise Library</h2>
 </div>
 
 <div class="row mb-4">
@@ -18,7 +59,9 @@
                     </option>
                 {% endfor %}
             </select>
-            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter me-2"></i>Filter
+            </button>
         </form>
     </div>
 </div>
@@ -26,22 +69,40 @@
 <div class="row">
     {% for exercise in exercises %}
         <div class="col-md-6 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ exercise.name }}</h5>
-                    <p class="card-text">{{ exercise.description|truncatewords:15 }}</p>
-                    <p class="text-muted">
-                        <strong>Muscle Groups:</strong> {{ exercise.muscle_groups }}<br>
-                        {% if exercise.equipment_needed %}
-                            <strong>Equipment:</strong> {{ exercise.equipment_needed }}
-                        {% endif %}
-                    </p>
-                    {% if exercise.youtube_url %}
-                        <a href="{{ exercise.youtube_url }}" target="_blank" class="btn btn-danger btn-sm me-2">
-                            📺 Watch Video
-                        </a>
+            <div class="card exercise-card">
+                <div class="exercise-card-img-wrapper">
+                    {% if exercise.image %}
+                        <img src="{{ exercise.image.url }}" alt="{{ exercise.name }}" class="exercise-card-img">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80" alt="{{ exercise.name }}" class="exercise-card-img">
                     {% endif %}
-                    <a href="{% url 'exercise_detail' exercise.id %}" class="btn btn-primary btn-sm">View Details</a>
+                    {% if exercise.youtube_url %}
+                        <span class="badge bg-danger exercise-badge">
+                            <i class="fas fa-play me-1"></i>Video
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ exercise.name }}</h5>
+                    <p class="card-text text-muted">{{ exercise.description|truncatewords:15 }}</p>
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-dumbbell me-2 text-primary"></i><strong>Muscle Groups:</strong> {{ exercise.muscle_groups }}
+                    </p>
+                    {% if exercise.equipment_needed %}
+                        <p class="text-muted mb-3">
+                            <i class="fas fa-tools me-2 text-success"></i><strong>Equipment:</strong> {{ exercise.equipment_needed }}
+                        </p>
+                    {% endif %}
+                    <div class="d-flex gap-2">
+                        {% if exercise.youtube_url %}
+                            <a href="{{ exercise.youtube_url }}" target="_blank" class="btn btn-danger btn-sm">
+                                <i class="fas fa-play me-1"></i>Watch Video
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'exercise_detail' exercise.id %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>View Details
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import render
+from django.conf import settings
+from django.conf.urls.static import static
 
 def home(request):
     return render(request, 'home.html')
@@ -30,3 +32,7 @@ urlpatterns = [
     path('calculators/', include('calculators.urls')),
     path('admin-panel/', include('admin_panel.urls')),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

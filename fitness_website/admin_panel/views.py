@@ -192,7 +192,7 @@ def workout_list(request):
 @user_passes_test(is_admin_user)
 def workout_create(request):
     if request.method == 'POST':
-        form = WorkoutPlanForm(request.POST)
+        form = WorkoutPlanForm(request.POST, request.FILES)
         if form.is_valid():
             workout = form.save()
             messages.success(request, f'Workout plan "{workout.name}" created successfully!')
@@ -224,7 +224,7 @@ def workout_edit(request, workout_id):
     workout = get_object_or_404(WorkoutPlan, id=workout_id)
     
     if request.method == 'POST':
-        form = WorkoutPlanForm(request.POST, instance=workout)
+        form = WorkoutPlanForm(request.POST, request.FILES, instance=workout)
         if form.is_valid():
             form.save()
             messages.success(request, f'Workout plan "{workout.name}" updated successfully!')
@@ -287,7 +287,7 @@ def exercise_list(request):
 @user_passes_test(is_admin_user)
 def exercise_create(request):
     if request.method == 'POST':
-        form = ExerciseForm(request.POST)
+        form = ExerciseForm(request.POST, request.FILES)
         if form.is_valid():
             exercise = form.save()
             messages.success(request, f'Exercise "{exercise.name}" created successfully!')
@@ -303,7 +303,7 @@ def exercise_edit(request, exercise_id):
     exercise = get_object_or_404(Exercise, id=exercise_id)
     
     if request.method == 'POST':
-        form = ExerciseForm(request.POST, instance=exercise)
+        form = ExerciseForm(request.POST, request.FILES, instance=exercise)
         if form.is_valid():
             form.save()
             messages.success(request, f'Exercise "{exercise.name}" updated successfully!')
@@ -361,7 +361,7 @@ def diet_plan_list(request):
 @user_passes_test(is_admin_user)
 def diet_plan_create(request):
     if request.method == 'POST':
-        form = DietPlanForm(request.POST)
+        form = DietPlanForm(request.POST, request.FILES)
         if form.is_valid():
             diet_plan = form.save()
             messages.success(request, f'Diet plan "{diet_plan.name}" created successfully!')
@@ -377,7 +377,7 @@ def diet_plan_edit(request, diet_plan_id):
     diet_plan = get_object_or_404(DietPlan, id=diet_plan_id)
     
     if request.method == 'POST':
-        form = DietPlanForm(request.POST, instance=diet_plan)
+        form = DietPlanForm(request.POST, request.FILES, instance=diet_plan)
         if form.is_valid():
             form.save()
             messages.success(request, f'Diet plan "{diet_plan.name}" updated successfully!')

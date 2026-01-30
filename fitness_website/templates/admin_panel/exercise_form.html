@@ -21,7 +21,7 @@
                 </h5>
             </div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     
                     <div class="mb-3">
@@ -67,6 +67,15 @@
                             <div class="text-danger">{{ form.youtube_url.errors }}</div>
                         {% endif %}
                         <small class="form-text text-muted">Full YouTube URL for demonstration video</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">Exercise Image</label>
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <div class="text-danger">{{ form.image.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">Upload an image demonstrating the exercise (optional)</small>
                     </div>
                     
                     <div class="mb-3">

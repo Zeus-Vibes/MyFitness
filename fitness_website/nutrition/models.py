@@ -18,6 +18,7 @@ class DietPlan(models.Model):
     protein_percentage = models.FloatField()
     carbs_percentage = models.FloatField()
     fat_percentage = models.FloatField()
+    image = models.ImageField(upload_to='diet_plans/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -2,26 +2,78 @@
 
 {% block title %}Workout Plans - Fitness Website{% endblock %}
 
+{% block extra_css %}
+<style>
+    .workout-card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .workout-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
+    }
+    
+    .workout-card-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .workout-card:hover .workout-card-img {
+        transform: scale(1.1);
+    }
+    
+    .workout-card-img-wrapper {
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .workout-card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Workout Plans</h2>
+    <h2 class="fw-bold">Workout Plans</h2>
 </div>
 
 <div class="row">
     {% for plan in plans %}
         <div class="col-md-4 mb-4">
-            <div class="card h-100">
+            <div class="card workout-card h-100">
+                <div class="workout-card-img-wrapper">
+                    {% if plan.image %}
+                        <img src="{{ plan.image.url }}" alt="{{ plan.name }}" class="workout-card-img">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80" alt="{{ plan.name }}" class="workout-card-img">
+                    {% endif %}
+                    <div class="workout-card-overlay"></div>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ plan.name }}</h5>
-                    <p class="card-text">{{ plan.description|truncatewords:20 }}</p>
+                    <h5 class="card-title fw-bold">{{ plan.name }}</h5>
+                    <p class="card-text text-muted">{{ plan.description|truncatewords:20 }}</p>
                     <div class="mb-2">
                         <span class="badge bg-primary">{{ plan.get_difficulty_level_display }}</span>
                         <span class="badge bg-success">{{ plan.get_goal_display }}</span>
                     </div>
-                    <p class="text-muted">Duration: {{ plan.duration_weeks }} weeks</p>
+                    <p class="text-muted mb-0"><i class="fas fa-calendar-alt me-2"></i>Duration: {{ plan.duration_weeks }} weeks</p>
                 </div>
-                <div class="card-footer">
-                    <a href="{% url 'workout_plan_detail' plan.id %}" class="btn btn-primary">View Details</a>
+                <div class="card-footer bg-white border-0">
+                    <a href="{% url 'workout_plan_detail' plan.id %}" class="btn btn-primary w-100">
+                        <i class="fas fa-eye me-2"></i>View Details
+                    </a>
                 </div>
             </div>
         </div>
