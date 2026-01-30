@@ -1,0 +1,166 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Diet Plans - Admin Panel{% endblock %}
+
+{% block page_title %}Diet Plan Management{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'admin_panel:diet_plan_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-2"></i>Create Diet Plan
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Search and Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="search" 
+                       placeholder="Search diet plans..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <select name="goal" class="form-control">
+                    <option value="">All Goals</option>
+                    <option value="weight_loss" {% if goal_filter == 'weight_loss' %}selected{% endif %}>Weight Loss</option>
+                    <option value="muscle_gain" {% if goal_filter == 'muscle_gain' %}selected{% endif %}>Muscle Gain</option>
+                    <option value="maintenance" {% if goal_filter == 'maintenance' %}selected{% endif %}>Maintenance</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'admin_panel:diet_plan_list' %}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-times me-2"></i>Clear
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Diet Plans Grid -->
+<div class="row">
+    {% for diet_plan in page_obj %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="card-title mb-0">{{ diet_plan.name|truncatechars:30 }}</h6>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'diet_plan_detail' diet_plan.id %}" target="_blank">
+                                    <i class="fas fa-eye me-2"></i>View Details
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin_panel:diet_plan_edit' diet_plan.id %}">
+                                    <i class="fas fa-edit me-2"></i>Edit
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" 
+                                       onclick="confirmDelete('{% url 'admin_panel:diet_plan_delete' diet_plan.id %}', '{{ diet_plan.name }}')">
+                                    <i class="fas fa-trash me-2"></i>Delete
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ diet_plan.description|truncatechars:100 }}</p>
+                    <div class="mb-3">
+                        <span class="badge bg-success">{{ diet_plan.get_goal_display }}</span>
+                        <span class="badge bg-info">{{ diet_plan.daily_calories }} cal/day</span>
+                    </div>
+                    
+                    <!-- Macro Distribution -->
+                    <div class="row text-center mb-2">
+                        <div class="col-4">
+                            <div class="border rounded p-2">
+                                <div class="text-primary fw-bold">{{ diet_plan.protein_percentage|floatformat:0 }}%</div>
+                                <small class="text-muted">Protein</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border rounded p-2">
+                                <div class="text-warning fw-bold">{{ diet_plan.carbs_percentage|floatformat:0 }}%</div>
+                                <small class="text-muted">Carbs</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border rounded p-2">
+                                <div class="text-danger fw-bold">{{ diet_plan.fat_percentage|floatformat:0 }}%</div>
+                                <small class="text-muted">Fat</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row text-center">
+                        <div class="col-12">
+                            <small class="text-muted">Meals: {{ diet_plan.meals.count }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">{{ diet_plan.created_at|date:"M d, Y" }}</small>
+                        <a href="{% url 'admin_panel:diet_plan_edit' diet_plan.id %}" class="btn btn-sm btn-primary">
+                            Edit Plan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-apple-alt fa-3x text-muted mb-3"></i>
+                    <h5>No diet plans found</h5>
+                    <p class="text-muted">Create your first diet plan to get started.</p>
+                    <a href="{% url 'admin_panel:diet_plan_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create Diet Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+    <nav aria-label="Diet plan pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">Previous</a>
+                </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
+<!-- CSRF Token for AJAX requests -->
+{% csrf_token %}
+{% endblock %}

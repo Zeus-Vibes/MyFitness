@@ -1,0 +1,108 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}{{ user_obj.username }} - Admin Panel{% endblock %}
+
+{% block page_title %}User Details: {{ user_obj.full_name }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'admin_panel:user_edit' user_obj.id %}" class="btn btn-primary">
+    <i class="fas fa-edit me-2"></i>Edit User
+</a>
+<a href="{% url 'admin_panel:user_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left me-2"></i>Back to Users
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                {% if user_obj.profile_picture %}
+                    <img src="{{ user_obj.profile_picture.url }}" alt="Profile" class="rounded-circle mb-3" width="120" height="120">
+                {% else %}
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 120px; font-size: 3rem;">
+                        {{ user_obj.username|first|upper }}
+                    </div>
+                {% endif %}
+                <h4>{{ user_obj.full_name }}</h4>
+                <p class="text-muted">@{{ user_obj.username }}</p>
+                <span class="badge bg-{% if user_obj.role == 'admin' %}danger{% elif user_obj.role == 'trainer' %}warning{% else %}primary{% endif %} mb-2">
+                    {{ user_obj.get_role_display }}
+                </span>
+                {% if user_obj.is_active %}
+                    {% if user_obj.is_active_member %}
+                        <span class="badge bg-success">Active Member</span>
+                    {% else %}
+                        <span class="badge bg-warning">Inactive Member</span>
+                    {% endif %}
+                {% else %}
+                    <span class="badge bg-danger">Disabled</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">User Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Email:</strong> {{ user_obj.email|default:"Not provided" }}<br>
+                        <strong>Phone:</strong> {{ user_obj.phone_number|default:"Not provided" }}<br>
+                        <strong>Date of Birth:</strong> {{ user_obj.date_of_birth|default:"Not provided" }}<br>
+                        <strong>Age:</strong> {{ user_obj.age|default:"Not provided" }}<br>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Height:</strong> {{ user_obj.height|default:"Not provided" }} cm<br>
+                        <strong>Weight:</strong> {{ user_obj.weight|default:"Not provided" }} kg<br>
+                        <strong>Fitness Goal:</strong> {{ user_obj.get_fitness_goal_display|default:"Not set" }}<br>
+                        <strong>Activity Level:</strong> {{ user_obj.get_activity_level_display|default:"Not set" }}<br>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Member Since:</strong> {{ user_obj.date_joined|date:"M d, Y" }}<br>
+                        <strong>Membership Start:</strong> {{ user_obj.membership_start_date|default:"Not set" }}<br>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Last Login:</strong> {{ user_obj.last_login|default:"Never" }}<br>
+                        <strong>Last Updated:</strong> {{ user_obj.updated_at|date:"M d, Y" }}<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Summary -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Activity Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-3">
+                        <h4 class="text-primary">{{ user_workouts.count }}</h4>
+                        <small>Active Workouts</small>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-success">{{ user_diet_plans.count }}</h4>
+                        <small>Diet Plans</small>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-info">{{ bmi_calculations.count }}</h4>
+                        <small>BMI Calculations</small>
+                    </div>
+                    <div class="col-3">
+                        <h4 class="text-warning">{{ calorie_calculations.count }}</h4>
+                        <small>Calorie Calculations</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

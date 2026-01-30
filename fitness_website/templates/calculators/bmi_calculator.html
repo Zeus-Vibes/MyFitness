@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}BMI Calculator - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>BMI Calculator</h3>
+                <p class="mb-0">Calculate your Body Mass Index to assess your weight status</p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.height.id_for_label }}" class="form-label">Height (cm)</label>
+                            {{ form.height }}
+                            {% if form.height.errors %}
+                                <div class="text-danger">{{ form.height.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.weight.id_for_label }}" class="form-label">Weight (kg)</label>
+                            {{ form.weight }}
+                            {% if form.weight.errors %}
+                                <div class="text-danger">{{ form.weight.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Calculate BMI</button>
+                </form>
+                
+                {% if result %}
+                <div class="mt-4">
+                    <div class="alert alert-success">
+                        <h4>Your BMI Result</h4>
+                        <p class="mb-1"><strong>BMI:</strong> {{ result.bmi }}</p>
+                        <p class="mb-0"><strong>Category:</strong> {{ result.category }}</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>BMI Categories</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Underweight:</strong> BMI less than 18.5</li>
+                                <li><strong>Normal weight:</strong> BMI 18.5-24.9</li>
+                                <li><strong>Overweight:</strong> BMI 25-29.9</li>
+                                <li><strong>Obese:</strong> BMI 30 or greater</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

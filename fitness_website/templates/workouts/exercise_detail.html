@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ exercise.name }} - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ exercise.name }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Description:</strong>
+                    <p>{{ exercise.description }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Instructions:</strong>
+                    <div>{{ exercise.instructions|linebreaks }}</div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Muscle Groups:</strong>
+                        <p>{{ exercise.muscle_groups }}</p>
+                    </div>
+                    {% if exercise.equipment_needed %}
+                    <div class="col-md-6">
+                        <strong>Equipment Needed:</strong>
+                        <p>{{ exercise.equipment_needed }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        {% if exercise.youtube_url %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Video Demonstration</h5>
+            </div>
+            <div class="card-body">
+                <div class="ratio ratio-16x9">
+                    {% if 'youtube.com/watch?v=' in exercise.youtube_url %}
+                        {% with exercise.youtube_url|cut:'https://www.youtube.com/watch?v=' as video_id %}
+                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                        {% endwith %}
+                    {% elif 'youtu.be/' in exercise.youtube_url %}
+                        {% with exercise.youtube_url|cut:'https://youtu.be/' as video_id %}
+                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                        {% endwith %}
+                    {% else %}
+                        <p>Invalid YouTube URL format</p>
+                    {% endif %}
+                </div>
+                <div class="mt-2">
+                    <a href="{{ exercise.youtube_url }}" target="_blank" class="btn btn-danger btn-sm">
+                        Watch on YouTube
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card">
+            <div class="card-body">
+                <h5>Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'exercises' %}" class="btn btn-outline-primary">Back to Exercises</a>
+                    <a href="{% url 'workout_plans' %}" class="btn btn-outline-success">View Workout Plans</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

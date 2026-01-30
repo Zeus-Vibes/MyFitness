@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ session.name }} - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ session.name }}</h2>
+                <p class="mb-0 text-muted">{{ session.workout_plan.name }} - Day {{ session.day_number }}</p>
+            </div>
+            <div class="card-body">
+                {% if session.description %}
+                    <p>{{ session.description }}</p>
+                {% endif %}
+                
+                <h4>Exercises</h4>
+                {% for workout_exercise in exercises %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h5 class="card-title">{{ workout_exercise.exercise.name }}</h5>
+                                    <p class="card-text">{{ workout_exercise.exercise.description|truncatewords:15 }}</p>
+                                    <p class="text-muted">
+                                        <strong>Muscle Groups:</strong> {{ workout_exercise.exercise.muscle_groups }}
+                                    </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h6>Sets & Reps</h6>
+                                        <p class="mb-1"><strong>{{ workout_exercise.sets }} sets</strong></p>
+                                        <p class="mb-1">{{ workout_exercise.reps }} reps</p>
+                                        <p class="text-muted">Rest: {{ workout_exercise.rest_time }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="d-grid gap-2">
+                                        {% if workout_exercise.exercise.youtube_url %}
+                                            <a href="{{ workout_exercise.exercise.youtube_url }}" target="_blank" class="btn btn-danger btn-sm">
+                                                📺 Video
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'exercise_detail' workout_exercise.exercise.id %}" class="btn btn-primary btn-sm">
+                                            Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if workout_exercise.notes %}
+                                <div class="mt-2">
+                                    <small class="text-muted"><strong>Notes:</strong> {{ workout_exercise.notes }}</small>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No exercises assigned to this session.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Session Info</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>Workout Plan:</strong> {{ session.workout_plan.name }}</li>
+                    <li><strong>Day:</strong> {{ session.day_number }}</li>
+                    <li><strong>Exercises:</strong> {{ exercises.count }}</li>
+                </ul>
+                
+                {% if user.is_authenticated %}
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-success" onclick="alert('Feature coming soon!')">Mark as Complete</button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'workout_plan_detail' session.workout_plan.id %}" class="btn btn-outline-primary">Back to Plan</a>
+                    <a href="{% url 'workout_plans' %}" class="btn btn-outline-success">All Plans</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}{{ workout.name }} - Admin Panel{% endblock %}
+
+{% block page_title %}{{ workout.name }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'admin_panel:workout_edit' workout.id %}" class="btn btn-primary">
+    <i class="fas fa-edit me-2"></i>Edit Workout
+</a>
+<a href="{% url 'admin_panel:workout_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left me-2"></i>Back to Workouts
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Workout Plan Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Difficulty Level:</strong>
+                        <span class="badge bg-{% if workout.difficulty_level == 'beginner' %}success{% elif workout.difficulty_level == 'intermediate' %}warning{% else %}danger{% endif %} ms-2">
+                            {{ workout.get_difficulty_level_display }}
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Goal:</strong>
+                        <span class="badge bg-primary ms-2">{{ workout.get_goal_display }}</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Duration:</strong> {{ workout.duration_weeks }} weeks
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Total Sessions:</strong> {{ sessions.count }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Description:</strong>
+                    <p class="mt-2">{{ workout.description }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Created:</strong> {{ workout.created_at|date:"F d, Y" }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Workout Sessions -->
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>
+                    Workout Sessions
+                </h5>
+                <button class="btn btn-sm btn-primary" onclick="alert('Add session feature coming soon!')">
+                    <i class="fas fa-plus me-2"></i>Add Session
+                </button>
+            </div>
+            <div class="card-body">
+                {% for session in sessions %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Day {{ session.day_number }}: {{ session.name }}</h6>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'workout_session_detail' session.id %}" target="_blank" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <button class="btn btn-outline-success" onclick="alert('Edit session feature coming soon!')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="alert('Delete session feature coming soon!')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if session.description %}
+                                <p class="text-muted">{{ session.description }}</p>
+                            {% endif %}
+                            
+                            <h6>Exercises:</h6>
+                            {% if session.exercises.exists %}
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Exercise</th>
+                                                <th>Sets</th>
+                                                <th>Reps</th>
+                                                <th>Rest</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for workout_exercise in session.exercises.all %}
+                                                <tr>
+                                                    <td>{{ workout_exercise.exercise.name }}</td>
+                                                    <td>{{ workout_exercise.sets }}</td>
+                                                    <td>{{ workout_exercise.reps }}</td>
+                                                    <td>{{ workout_exercise.rest_time }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No exercises added yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No workout sessions created yet.</p>
+                        <button class="btn btn-primary" onclick="alert('Add session feature coming soon!')">
+                            <i class="fas fa-plus me-2"></i>Add First Session
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <h3 class="text-primary">{{ sessions.count }}</h3>
+                    <p class="text-muted mb-0">Total Sessions</p>
+                </div>
+                
+                <div class="text-center mb-3">
+                    <h3 class="text-success">{{ total_exercises }}</h3>
+                    <p class="text-muted mb-0">Total Exercises</p>
+                </div>
+                
+                <div class="text-center">
+                    <h3 class="text-info">{{ workout.duration_weeks }}</h3>
+                    <p class="text-muted mb-0">Weeks Duration</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>
+                    Usage
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-center">
+                    <strong class="h4">{{ workout.userworkoutplan_set.count }}</strong><br>
+                    <span class="text-muted">Users following this plan</span>
+                </p>
+                
+                <div class="d-grid gap-2 mt-3">
+                    <a href="{% url 'workout_plan_detail' workout.id %}" target="_blank" class="btn btn-outline-primary">
+                        <i class="fas fa-external-link-alt me-2"></i>View Public Page
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-cog me-2"></i>
+                    Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'admin_panel:workout_edit' workout.id %}" class="btn btn-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Workout
+                    </a>
+                    <button class="btn btn-success" onclick="alert('Duplicate feature coming soon!')">
+                        <i class="fas fa-copy me-2"></i>Duplicate Plan
+                    </button>
+                    <button class="btn btn-danger" 
+                            data-delete-url="{% url 'admin_panel:workout_delete' workout.id %}" 
+                            data-workout-name="{{ workout.name }}"
+                            onclick="confirmDelete(this.getAttribute('data-delete-url'), this.getAttribute('data-workout-name'))">
+                        <i class="fas fa-trash me-2"></i>Delete Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSRF Token for AJAX requests -->
+{% csrf_token %}
+{% endblock %}

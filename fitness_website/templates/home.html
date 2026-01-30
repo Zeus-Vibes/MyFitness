@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5 mb-5 rounded">
+    <div class="container text-center">
+        <h1 class="display-4">Welcome to FitLife</h1>
+        <p class="lead">Your ultimate fitness companion for workouts, nutrition, and health tracking</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-light btn-lg me-3">Get Started</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">🏋️ Workout Plans</h5>
+                <p class="card-text">Discover structured workout plans for all fitness levels</p>
+                <a href="{% url 'workout_plans' %}" class="btn btn-primary">View Plans</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">💪 Exercises</h5>
+                <p class="card-text">Browse exercises with video demonstrations</p>
+                <a href="{% url 'exercises' %}" class="btn btn-primary">Browse Exercises</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">🥗 Diet Plans</h5>
+                <p class="card-text">Nutrition plans tailored to your fitness goals</p>
+                <a href="{% url 'diet_plans' %}" class="btn btn-primary">View Diet Plans</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">📊 Calculators</h5>
+                <p class="card-text">BMI and calorie calculators for health tracking</p>
+                <a href="{% url 'bmi_calculator' %}" class="btn btn-primary">Calculate BMI</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="row mt-5">
+    <div class="col-12">
+        <h3>Welcome back, {{ user.first_name|default:user.username }}!</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Fitness Journey</h5>
+                        <p class="card-text">Track your progress and stay motivated</p>
+                        <a href="{% url 'my_workouts' %}" class="btn btn-outline-primary me-2">My Workouts</a>
+                        <a href="{% url 'my_diet_plans' %}" class="btn btn-outline-primary">My Diet Plans</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Tools</h5>
+                        <p class="card-text">Calculate your fitness metrics</p>
+                        <a href="{% url 'bmi_calculator' %}" class="btn btn-outline-success me-2">BMI Calculator</a>
+                        <a href="{% url 'calorie_calculator' %}" class="btn btn-outline-success">Calorie Calculator</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

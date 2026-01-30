@@ -1,0 +1,287 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Dashboard - Admin Panel{% endblock %}
+
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <div class="stats-number">{{ stats.total_users }}</div>
+                    <div>Total Users</div>
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-users fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <div class="stats-number">{{ stats.active_users }}</div>
+                    <div>Active Members</div>
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-user-check fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <div class="stats-number">{{ stats.total_workouts }}</div>
+                    <div>Workout Plans</div>
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-dumbbell fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <div class="stats-number">{{ stats.total_exercises }}</div>
+                    <div>Exercises</div>
+                </div>
+                <div class="ms-3">
+                    <i class="fas fa-running fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Stats Row -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-apple-alt fa-2x text-success mb-2"></i>
+                <h4 class="card-title">{{ stats.total_diet_plans }}</h4>
+                <p class="card-text">Diet Plans</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-utensils fa-2x text-warning mb-2"></i>
+                <h4 class="card-title">{{ stats.total_foods }}</h4>
+                <p class="card-text">Food Items</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-weight fa-2x text-info mb-2"></i>
+                <h4 class="card-title">{{ stats.bmi_calculations }}</h4>
+                <p class="card-text">BMI Calculations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="fas fa-calculator fa-2x text-danger mb-2"></i>
+                <h4 class="card-title">{{ stats.calorie_calculations }}</h4>
+                <p class="card-text">Calorie Calculations</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts and Recent Activity -->
+<div class="row">
+    <!-- User Role Distribution Chart -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    User Role Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="userRoleChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'admin_panel:user_create' %}" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Add New User
+                    </a>
+                    <a href="{% url 'admin_panel:workout_create' %}" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Create Workout Plan
+                    </a>
+                    <a href="{% url 'admin_panel:exercise_create' %}" class="btn btn-info">
+                        <i class="fas fa-plus me-2"></i>Add Exercise
+                    </a>
+                    <a href="{% url 'admin_panel:diet_plan_create' %}" class="btn btn-warning">
+                        <i class="fas fa-plus me-2"></i>Create Diet Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>
+                    Recent Users
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for user in recent_users %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">{{ user.full_name }}</div>
+                            <small class="text-muted">{{ user.get_role_display }}</small>
+                        </div>
+                        <small class="text-muted">{{ user.date_joined|date:"M d" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No recent users</p>
+                {% endfor %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'admin_panel:user_list' %}" class="btn btn-sm btn-outline-primary">View All Users</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-dumbbell me-2"></i>
+                    Recent Workouts
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for workout in recent_workouts %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">{{ workout.name|truncatechars:20 }}</div>
+                            <small class="text-muted">{{ workout.get_difficulty_level_display }}</small>
+                        </div>
+                        <small class="text-muted">{{ workout.created_at|date:"M d" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No recent workouts</p>
+                {% endfor %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'admin_panel:workout_list' %}" class="btn btn-sm btn-outline-success">View All Workouts</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-apple-alt me-2"></i>
+                    Recent Diet Plans
+                </h5>
+            </div>
+            <div class="card-body">
+                {% for diet_plan in recent_diet_plans %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">{{ diet_plan.name|truncatechars:20 }}</div>
+                            <small class="text-muted">{{ diet_plan.get_goal_display }}</small>
+                        </div>
+                        <small class="text-muted">{{ diet_plan.created_at|date:"M d" }}</small>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No recent diet plans</p>
+                {% endfor %}
+                <div class="text-center mt-3">
+                    <a href="{% url 'admin_panel:diet_plan_list' %}" class="btn btn-sm btn-outline-warning">View All Diet Plans</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // User Role Distribution Chart
+    const ctx = document.getElementById('userRoleChart');
+    if (ctx) {
+        const userRoleDataRaw = '{{ user_roles|escapejs }}';
+        let userRoleData = [];
+        
+        try {
+            userRoleData = JSON.parse(userRoleDataRaw);
+        } catch (e) {
+            console.error('Error parsing user role data:', e);
+        }
+        
+        const labels = [];
+        const data = [];
+        const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe'];
+        
+        if (userRoleData && userRoleData.length > 0) {
+            userRoleData.forEach(function(item) {
+                const roleName = item.role ? item.role.charAt(0).toUpperCase() + item.role.slice(1) : 'Unknown';
+                labels.push(roleName);
+                data.push(item.count || 0);
+            });
+            
+            new Chart(ctx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, data.length),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        } else {
+            // Show message when no data available
+            const chartContainer = ctx.parentElement;
+            chartContainer.innerHTML = '<p class="text-center text-muted">No user role data available</p>';
+        }
+    }
+</script>
+{% endblock %}

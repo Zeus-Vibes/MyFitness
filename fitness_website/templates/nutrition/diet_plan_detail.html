@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ plan.name }} - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ plan.name }}</h2>
+                <div class="mt-2">
+                    <span class="badge bg-success">{{ plan.get_goal_display }}</span>
+                    <span class="badge bg-info">{{ plan.daily_calories }} cal/day</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>{{ plan.description }}</p>
+                
+                <div class="row text-center mb-4">
+                    <div class="col-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5>{{ plan.protein_percentage|floatformat:0 }}%</h5>
+                                <p class="mb-0">Protein</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5>{{ plan.carbs_percentage|floatformat:0 }}%</h5>
+                                <p class="mb-0">Carbs</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5>{{ plan.fat_percentage|floatformat:0 }}%</h5>
+                                <p class="mb-0">Fat</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4>Meal Plan</h4>
+                {% for meal_type, meals in meals_by_type.items %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5>{{ meal_type|title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for meal in meals %}
+                                <div class="mb-3">
+                                    <h6>{{ meal.name }}</h6>
+                                    {% if meal.description %}
+                                        <p class="text-muted">{{ meal.description }}</p>
+                                    {% endif %}
+                                    
+                                    {% if meal.foods.exists %}
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Food</th>
+                                                        <th>Quantity</th>
+                                                        <th>Calories</th>
+                                                        <th>Protein</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for meal_food in meal.foods.all %}
+                                                        <tr>
+                                                            <td>{{ meal_food.food.name }}</td>
+                                                            <td>{{ meal_food.quantity_grams }}g</td>
+                                                            <td>{{ meal_food.calories|floatformat:0 }}</td>
+                                                            <td>{{ meal_food.protein|floatformat:1 }}g</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No meals available for this diet plan.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Plan Overview</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>Goal:</strong> {{ plan.get_goal_display }}</li>
+                    <li><strong>Daily Calories:</strong> {{ plan.daily_calories }}</li>
+                    <li><strong>Protein:</strong> {{ plan.protein_percentage|floatformat:0 }}%</li>
+                    <li><strong>Carbs:</strong> {{ plan.carbs_percentage|floatformat:0 }}%</li>
+                    <li><strong>Fat:</strong> {{ plan.fat_percentage|floatformat:0 }}%</li>
+                </ul>
+                
+                {% if user.is_authenticated %}
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-success" onclick="alert('Feature coming soon!')">Start This Plan</button>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <a href="{% url 'login' %}">Login</a> to start this diet plan
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'diet_plans' %}" class="btn btn-outline-primary">Back to Plans</a>
+                    <a href="{% url 'calorie_calculator' %}" class="btn btn-outline-success">Calculate Calories</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

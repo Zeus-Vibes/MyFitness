@@ -1,0 +1,208 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}{{ action }} User - Admin Panel{% endblock %}
+
+{% block page_title %}{{ action }} User{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'admin_panel:user_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left me-2"></i>Back to Users
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    {{ action }} User Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Basic Information -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Username *</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger">{{ form.username.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">Email *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    
+                    <!-- Password Fields (for new users or password change) -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                Password {% if action == 'Create' %}*{% endif %}
+                            </label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger">{{ form.password.errors }}</div>
+                            {% endif %}
+                            {% if action == 'Edit' %}
+                                <small class="form-text text-muted">Leave blank to keep current password</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.confirm_password.id_for_label }}" class="form-label">
+                                Confirm Password {% if action == 'Create' %}*{% endif %}
+                            </label>
+                            {{ form.confirm_password }}
+                            {% if form.confirm_password.errors %}
+                                <div class="text-danger">{{ form.confirm_password.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Role and Status -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.role.id_for_label }}" class="form-label">Role</label>
+                            {{ form.role }}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                {{ form.is_active }}
+                                <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                    Account Active
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mt-4">
+                                {{ form.is_active_member }}
+                                <label class="form-check-label" for="{{ form.is_active_member.id_for_label }}">
+                                    Active Member
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <h6 class="border-bottom pb-2 mb-3">Contact Information</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                        </div>
+                    </div>
+                    
+                    <!-- Fitness Information -->
+                    <h6 class="border-bottom pb-2 mb-3">Fitness Information</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.age.id_for_label }}" class="form-label">Age</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.height.id_for_label }}" class="form-label">Height (cm)</label>
+                            {{ form.height }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.weight.id_for_label }}" class="form-label">Weight (kg)</label>
+                            {{ form.weight }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.fitness_goal.id_for_label }}" class="form-label">Fitness Goal</label>
+                            {{ form.fitness_goal }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.activity_level.id_for_label }}" class="form-label">Activity Level</label>
+                            {{ form.activity_level }}
+                        </div>
+                    </div>
+                    
+                    <!-- Membership Information -->
+                    <h6 class="border-bottom pb-2 mb-3">Membership Information</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.membership_start_date.id_for_label }}" class="form-label">Membership Start Date</label>
+                            {{ form.membership_start_date }}
+                        </div>
+                    </div>
+                    
+                    <!-- Form Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Submit Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_panel:user_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>{{ action }} User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Help & Guidelines
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>User Roles:</h6>
+                <ul class="list-unstyled">
+                    <li><strong>User:</strong> Regular member with basic access</li>
+                    <li><strong>Trainer:</strong> Can manage workout plans and exercises</li>
+                    <li><strong>Admin:</strong> Full system access</li>
+                </ul>
+                
+                <h6 class="mt-3">Password Requirements:</h6>
+                <ul class="small">
+                    <li>At least 8 characters long</li>
+                    <li>Cannot be too similar to username</li>
+                    <li>Cannot be entirely numeric</li>
+                </ul>
+                
+                <h6 class="mt-3">Fitness Goals:</h6>
+                <ul class="small">
+                    <li><strong>Weight Loss:</strong> Focus on cardio and calorie deficit</li>
+                    <li><strong>Muscle Gain:</strong> Strength training and protein</li>
+                    <li><strong>Maintenance:</strong> Balanced approach</li>
+                    <li><strong>Endurance:</strong> Cardiovascular fitness</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

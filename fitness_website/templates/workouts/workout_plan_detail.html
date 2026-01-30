@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ plan.name }} - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>{{ plan.name }}</h2>
+                <div class="mt-2">
+                    <span class="badge bg-primary">{{ plan.get_difficulty_level_display }}</span>
+                    <span class="badge bg-success">{{ plan.get_goal_display }}</span>
+                    <span class="badge bg-info">{{ plan.duration_weeks }} weeks</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p>{{ plan.description }}</p>
+                
+                <h4>Workout Sessions</h4>
+                {% for session in sessions %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5>Day {{ session.day_number }}: {{ session.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if session.description %}
+                                <p class="text-muted">{{ session.description }}</p>
+                            {% endif %}
+                            <a href="{% url 'workout_session_detail' session.id %}" class="btn btn-primary btn-sm">View Session Details</a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No workout sessions available for this plan.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Plan Overview</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><strong>Difficulty:</strong> {{ plan.get_difficulty_level_display }}</li>
+                    <li><strong>Goal:</strong> {{ plan.get_goal_display }}</li>
+                    <li><strong>Duration:</strong> {{ plan.duration_weeks }} weeks</li>
+                    <li><strong>Sessions:</strong> {{ sessions.count }}</li>
+                </ul>
+                
+                {% if user.is_authenticated %}
+                    <div class="d-grid gap-2 mt-3">
+                        <button class="btn btn-success" onclick="alert('Feature coming soon!')">Start This Plan</button>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <a href="{% url 'login' %}">Login</a> to start this workout plan
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5>Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'workout_plans' %}" class="btn btn-outline-primary">Back to Plans</a>
+                    <a href="{% url 'exercises' %}" class="btn btn-outline-success">Browse Exercises</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

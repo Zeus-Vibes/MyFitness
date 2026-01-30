@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Fitness Website{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>My Profile</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.age.id_for_label }}" class="form-label">Age</label>
+                            {{ form.age }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.height.id_for_label }}" class="form-label">Height (cm)</label>
+                            {{ form.height }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.weight.id_for_label }}" class="form-label">Weight (kg)</label>
+                            {{ form.weight }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.fitness_goal.id_for_label }}" class="form-label">Fitness Goal</label>
+                            {{ form.fitness_goal }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.activity_level.id_for_label }}" class="form-label">Activity Level</label>
+                            {{ form.activity_level }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                {% if user.height and user.weight %}
+                    <p><strong>BMI:</strong> 
+                        {% widthratio user.weight 1 1 as weight_float %}
+                        {% widthratio user.height 100 1 as height_m %}
+                        {% widthratio weight_float 1 height_m as bmi_calc %}
+                        {% widthratio bmi_calc 1 height_m as bmi %}
+                        {{ bmi|floatformat:1 }}
+                    </p>
+                {% endif %}
+                <div class="d-grid gap-2">
+                    <a href="{% url 'bmi_calculator' %}" class="btn btn-outline-primary btn-sm">Calculate BMI</a>
+                    <a href="{% url 'calorie_calculator' %}" class="btn btn-outline-success btn-sm">Calculate Calories</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

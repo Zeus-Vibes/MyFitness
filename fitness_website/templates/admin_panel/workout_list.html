@@ -1,0 +1,159 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Workout Plans - Admin Panel{% endblock %}
+
+{% block page_title %}Workout Plan Management{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'admin_panel:workout_create' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-2"></i>Create Workout Plan
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Search and Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="search" 
+                       placeholder="Search workout plans..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-2">
+                <select name="difficulty" class="form-control">
+                    <option value="">All Difficulties</option>
+                    <option value="beginner" {% if difficulty_filter == 'beginner' %}selected{% endif %}>Beginner</option>
+                    <option value="intermediate" {% if difficulty_filter == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                    <option value="advanced" {% if difficulty_filter == 'advanced' %}selected{% endif %}>Advanced</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="goal" class="form-control">
+                    <option value="">All Goals</option>
+                    <option value="weight_loss" {% if goal_filter == 'weight_loss' %}selected{% endif %}>Weight Loss</option>
+                    <option value="muscle_gain" {% if goal_filter == 'muscle_gain' %}selected{% endif %}>Muscle Gain</option>
+                    <option value="strength" {% if goal_filter == 'strength' %}selected{% endif %}>Strength</option>
+                    <option value="endurance" {% if goal_filter == 'endurance' %}selected{% endif %}>Endurance</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'admin_panel:workout_list' %}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-times me-2"></i>Clear
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Workout Plans Grid -->
+<div class="row">
+    {% for workout in page_obj %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="card-title mb-0">{{ workout.name|truncatechars:30 }}</h6>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'admin_panel:workout_detail' workout.id %}">
+                                    <i class="fas fa-eye me-2"></i>View Details
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin_panel:workout_edit' workout.id %}">
+                                    <i class="fas fa-edit me-2"></i>Edit
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#" 
+                                       onclick="confirmDelete('{% url 'admin_panel:workout_delete' workout.id %}', '{{ workout.name }}')">
+                                    <i class="fas fa-trash me-2"></i>Delete
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ workout.description|truncatechars:100 }}</p>
+                    <div class="mb-2">
+                        <span class="badge bg-{% if workout.difficulty_level == 'beginner' %}success{% elif workout.difficulty_level == 'intermediate' %}warning{% else %}danger{% endif %}">
+                            {{ workout.get_difficulty_level_display }}
+                        </span>
+                        <span class="badge bg-primary">{{ workout.get_goal_display }}</span>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <small class="text-muted">Duration</small><br>
+                            <strong>{{ workout.duration_weeks }} weeks</strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Sessions</small><br>
+                            <strong>{{ workout.sessions.count }}</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">{{ workout.created_at|date:"M d, Y" }}</small>
+                        <a href="{% url 'admin_panel:workout_detail' workout.id %}" class="btn btn-sm btn-primary">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-dumbbell fa-3x text-muted mb-3"></i>
+                    <h5>No workout plans found</h5>
+                    <p class="text-muted">Create your first workout plan to get started.</p>
+                    <a href="{% url 'admin_panel:workout_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create Workout Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+    <nav aria-label="Workout pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if difficulty_filter %}&difficulty={{ difficulty_filter }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if difficulty_filter %}&difficulty={{ difficulty_filter }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">Previous</a>
+                </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+            
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if difficulty_filter %}&difficulty={{ difficulty_filter }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if difficulty_filter %}&difficulty={{ difficulty_filter }}{% endif %}{% if goal_filter %}&goal={{ goal_filter }}{% endif %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
+<!-- CSRF Token for AJAX requests -->
+{% csrf_token %}
+{% endblock %}
